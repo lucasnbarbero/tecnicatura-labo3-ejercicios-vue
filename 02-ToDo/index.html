@@ -11,29 +11,62 @@
     />
     <title>ToDos</title>
 
+    <!-- Agregamos el CDN de Vue -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
     <link rel="stylesheet" href="./css/styles.css" />
   </head>
   <body>
+    <!-- En este elemento se va a montar la aplicacion de Vue -->
     <div id="app">
       <div class="container">
         <h1>Lista de tareas</h1>
-        <form>
-          <input type="text" placeholder="Agregar nueva tarea" />
+
+        <!-- En el siguiente segmento utilizamos la etiqueta form -->
+        <!-- Esta etiqueta form tiene un evento llamado submit que va a enviar al backend los datos del formulario -->
+        <!-- El modificador '.prevent' lo que hace es prevenir que estos datos se envíen, por ende, no va a recargar mi navegador -->
+        <form @submit.prevent="agregarTarea">
+          <!-- Vinculamos el valor del input con el valor de tarea -->
+          <input
+            type="text"
+            placeholder="Agregar nueva tarea"
+            v-model="tarea"
+          />
+
+          <!-- Asociamos el boton con el evento submit del formulario al decir que 'type="submit"' -->
           <button class="btn-add" type="submit">Agregar</button>
         </form>
         <ul>
-          <li>
-            <span>Crear un proyecto de Vue.js</span>
-            <button class="btn-delete">Eliminar</button>
-          </li>
-          <li>
-            <span class="completed"
-              >Estudiar para el exámen de laboratorio 3</span
-            >
-            <button class="btn-delete">Eliminar</button>
+          <!-- Renderizamos una tarea por cada elemento dentro del array 'todasLasTareas' -->
+          <!-- 'tarea' va a ser el nombre con el cual voy a acceder a cada elemento -->
+          <!-- 'i' va a ser el indice que tiene este elemento dentro del array -->
+          <!-- 
+              Info adicional del v-for
+              un elemento de html puede recibir el atributo dinámico :key=""
+              Este atributo hace que, en la lista de elementos que se renderiza, cada uno sea unico
+              Esto previene errores al momento de actualizar los datos de la lista
+          -->
+          <li v-for="(item, index) in listaTareas" :key="index">
+            <!-- El siguiente input es de tipo 'checkbox' -->
+            <!-- Este checkbox va a tomar el valor que tenga la propiedad estado de cada tarea -->
+            <input type="checkbox" v-model="item.estado" />
+
+            <!-- En el siguiente elemento 'span' se va a ver el nombre de la tarea -->
+            <!-- Vinculamos dinamicamente el atributo class dependiendo del valor de la tarea que estamos viendo -->
+            <!-- Si la tarea en su propiedad 'estado' tiene valor true, entonces el span va a tomar, en su class el valor 'completed' -->
+            <!-- Si la tarea en su propiedad 'estado' tiene valor false, entonces no va a tomar ninguna clase -->
+            <span :class="{ 'completed': item.estado }">{{ item.nombre }}</span>
+
+            <!-- Vinculamos el metodo 'eliminarTarea' con el evento click -->
+            <!-- Este metodo 'eliminarTarea' recibe como parametro el indice que ocupa esta tarea en el array -->
+            <button class="btn-delete" @click="eliminarTarea(index)">
+              Eliminar
+            </button>
           </li>
         </ul>
       </div>
     </div>
+
+    <script src="main.js"></script>
   </body>
 </html>
